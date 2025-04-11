@@ -1,0 +1,69 @@
+{
+  "fields": {
+    "Microsoft.VSTS.Common.Priority": 2,
+    "Microsoft.VSTS.Common.Severity": "3 - Medium",
+    "Microsoft.VSTS.Common.StateChangeDate": "2025-04-11T06:33:08.717Z",
+    "Microsoft.VSTS.Common.ValueArea": "Business",
+    "System.AreaPath": "SmartDok\\Development\\Pulse",
+    "System.AssignedTo": {
+      "_links": {
+        "avatar": {
+          "href": "https://dev.azure.com/VismaSmartDok/_apis/GraphProfile/MemberAvatars/aad.NTA3YzllMDItMGQzNC03MTEwLWE1MTgtYzg5MDE4YjVlNWVi"
+        }
+      },
+      "descriptor": "aad.NTA3YzllMDItMGQzNC03MTEwLWE1MTgtYzg5MDE4YjVlNWVi",
+      "displayName": "Eivind Østlyngen",
+      "id": "507c9e02-0d34-6110-a518-c89018b5e5eb",
+      "imageUrl": "https://dev.azure.com/VismaSmartDok/_apis/GraphProfile/MemberAvatars/aad.NTA3YzllMDItMGQzNC03MTEwLWE1MTgtYzg5MDE4YjVlNWVi",
+      "uniqueName": "eivind.ostlyngen@visma.com",
+      "url": "https://spsprodweu1.vssps.visualstudio.com/A6f907309-b75f-4bcf-97d6-315feac5ddb2/_apis/Identities/507c9e02-0d34-6110-a518-c89018b5e5eb"
+    },
+    "System.BoardColumn": "Backlog",
+    "System.BoardColumnDone": false,
+    "System.ChangedBy": {
+      "_links": {
+        "avatar": {
+          "href": "https://dev.azure.com/VismaSmartDok/_apis/GraphProfile/MemberAvatars/aad.NTA3YzllMDItMGQzNC03MTEwLWE1MTgtYzg5MDE4YjVlNWVi"
+        }
+      },
+      "descriptor": "aad.NTA3YzllMDItMGQzNC03MTEwLWE1MTgtYzg5MDE4YjVlNWVi",
+      "displayName": "Eivind Østlyngen",
+      "id": "507c9e02-0d34-6110-a518-c89018b5e5eb",
+      "imageUrl": "https://dev.azure.com/VismaSmartDok/_apis/GraphProfile/MemberAvatars/aad.NTA3YzllMDItMGQzNC03MTEwLWE1MTgtYzg5MDE4YjVlNWVi",
+      "uniqueName": "eivind.ostlyngen@visma.com",
+      "url": "https://spsprodweu1.vssps.visualstudio.com/A6f907309-b75f-4bcf-97d6-315feac5ddb2/_apis/Identities/507c9e02-0d34-6110-a518-c89018b5e5eb"
+    },
+    "System.ChangedDate": "2025-04-11T06:33:08.717Z",
+    "System.CommentCount": 0,
+    "System.CreatedBy": {
+      "_links": {
+        "avatar": {
+          "href": "https://dev.azure.com/VismaSmartDok/_apis/GraphProfile/MemberAvatars/aad.NTA3YzllMDItMGQzNC03MTEwLWE1MTgtYzg5MDE4YjVlNWVi"
+        }
+      },
+      "descriptor": "aad.NTA3YzllMDItMGQzNC03MTEwLWE1MTgtYzg5MDE4YjVlNWVi",
+      "displayName": "Eivind Østlyngen",
+      "id": "507c9e02-0d34-6110-a518-c89018b5e5eb",
+      "imageUrl": "https://dev.azure.com/VismaSmartDok/_apis/GraphProfile/MemberAvatars/aad.NTA3YzllMDItMGQzNC03MTEwLWE1MTgtYzg5MDE4YjVlNWVi",
+      "uniqueName": "eivind.ostlyngen@visma.com",
+      "url": "https://spsprodweu1.vssps.visualstudio.com/A6f907309-b75f-4bcf-97d6-315feac5ddb2/_apis/Identities/507c9e02-0d34-6110-a518-c89018b5e5eb"
+    },
+    "System.CreatedDate": "2025-04-11T06:33:08.717Z",
+    "System.IterationPath": "SmartDok",
+    "System.Reason": "New",
+    "System.State": "New",
+    "System.TeamProject": "SmartDok",
+    "System.Title": "sdf",
+    "System.WorkItemType": "Bug",
+    "WEF_85A0BB1E6A254DFAB8D4685FF2807340_Kanban.Column": "For review",
+    "WEF_85A0BB1E6A254DFAB8D4685FF2807340_Kanban.Column.Done": false,
+    "WEF_8CD4FE9BCC3A44E2B1493478B81AA27B_Kanban.Column": "Backlog",
+    "WEF_8CD4FE9BCC3A44E2B1493478B81AA27B_Kanban.Column.Done": false,
+    "WEF_BC21CDE70CF840F5A63B54614C26BAEA_Kanban.Column": "Backlog",
+    "WEF_BC21CDE70CF840F5A63B54614C26BAEA_Kanban.Column.Done": false
+  },
+  "id": 20365,
+  "relations": null,
+  "rev": 1,
+  "url": "https://dev.azure.com/VismaSmartDok/2021ec0e-d9c8-4540-80bf-701978e8a138/_apis/wit/workItems/20365"
+}
