@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CONFIG_FILE="~/.azure-devops-env"
+CONFIG_FILE="$HOME/.azure-devops-env"
 
 if [[ ! -f "$CONFIG_FILE" ]]; then
     echo "Error: Required configuration file not found at '$CONFIG_FILE'" >&2
@@ -10,17 +10,15 @@ fi
 
 # Safe to source now
 source "$CONFIG_FILE"
-source 
-
 
 valid_types=("epic", "feature", "user story", "task", "bug", "chore", "discover")
 
 #Make cli argument lowercase to match with valid types
 itemType="${1,,}"
 
-if ! [[ ${valid_types[*]} =~ "$itemType" ]]; then 
-	echo "Not a valid work item"
-	exit 1 
+if ! [[ ${valid_types[*]} =~ "$itemType" ]]; then
+    echo "Not a valid work item"
+    exit 1
 fi
 
 # Create a temporary file and ensure it’s removed on exit
@@ -31,11 +29,11 @@ trap "rm -f '$tmpfile'" EXIT
 ${EDITOR:-vim} "$tmpfile"
 
 # Read the edited content
-user_input="$(tr -d '\r' < "$tmpfile")"
+user_input="$(tr -d '\r' <"$tmpfile")"
 
 if [[ "$user_input" = "" ]]; then
-	echo "No user input, exiting"
-	exit 1
+    echo "No user input, exiting"
+    exit 1
 fi
 
 # Split at the first double newline
@@ -52,5 +50,5 @@ output=$(az boards work-item create \
     --organization "$DEVOPS_BASE_URL" \
     --project "$DEVOPS_PROJECT" \
     --open)
-    
+
 echo "$output"
