@@ -4,7 +4,7 @@
 #
 # `sd-start master` should open master branch with no overrides. Also support i.e. "feature-live-feed" instead of master
 # `sd-start master --override luna mobileapi web` etc etc. Same syntax as ngrok start
-# Should ideally integrate with the ngrok config directly, both for consistently naming and for getting the correct url 
+# Should ideally integrate with the ngrok config directly, both for consistently naming and for getting the correct url
 #
 # Which branches to show: Could either just be a config of relevant branches, just input any name and hope it works, or fetch relevant branches from azure. Like we do in list-branches
 
@@ -12,19 +12,26 @@
 # Does this even make sense? It is not a config file since it does not export anything...
 # Not sure what is the best approach then,probably just reading its content to a string.
 CONFIG_FILE="$HOME/ngrok.yml"
-source="$1"
 
-subdomain="$(yq ".tunnels.${source}.subdomain" $CONFIG_FILE)"
-if [[ "$subdomain" = null ]]; then
-    echo "Error: Value ${source} not found in config" >&2
-    exit 1
-fi
+for source in "$@"
+do
+    echo "$source"
+    subdomain="$(yq ".tunnels.${source}.subdomain" $CONFIG_FILE)"
+    if [[ "$subdomain" = null ]]; then
+        echo "Error: Value ${source} not found in config" >&2
+        exit 1
+    fi
+    
+    echo "$subdomain"
+    
+    # URL encoded "https://"
+    complete="https%3A%2F%2F${subdomain}.eu.ngrok.io"
+    echo "$complete"
+done
 
-echo "$subdomain"
+exit 1
 
-# URL encoded "https://" 
-complete="https%3A%2F%2F${subdomain}.eu.ngrok.io"
-echo "$complete"
+
 
 exit 1
 
