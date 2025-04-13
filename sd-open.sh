@@ -40,6 +40,7 @@ do
     baseUrl="$(echo $baseUrl | sed "s#\($paramKey\)[^&]*#\1$url#")"
 done
 
+# Print the generated URL, if there is issues opening it.
 echo "$baseUrl"
 
 # Open the url in the browser. I imagine that this will only work for windows
