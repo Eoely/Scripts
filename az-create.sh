@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
-source ~/.azure-devops-env
+
+CONFIG_FILE="~/.azure-devops-env"
+
+if [[ ! -f "$CONFIG_FILE" ]]; then
+    echo "Error: Required configuration file not found at '$CONFIG_FILE'" >&2
+    echo "Please create it or check the path." >&2
+    exit 1
+fi
+
+# Safe to source now
+source "$CONFIG_FILE"
+source 
+
 
 valid_types=("epic", "feature", "user story", "task", "bug", "chore", "discover")
 
