@@ -6,11 +6,15 @@ if [[ ! -f "$CONFIG_FILE" ]]; then
     exit 1
 fi
 
-baseUrl="https://testing.smartdok.dev/Loader?next=%2FStart.aspx"
-frontEndUrl="https://smartdokui.z16.web.core.windows.net/master"
+baseUrl="https://testing.smartdok.dev/Loader?next=%2FStart.aspx&overlay-url=https%3A%2F%2Fportal.smartdok.dev%2Foverlay.js"
+frontEndUrl="https%3A%2F%2Fsmartdokui.z16.web.core.windows.net%2Fmaster%2F"
 # TODO: Read as flag argument with default to master
-branch="feature-forms-V3"
+# branch="feature-forms-V3"
 branch="feature-handbook-test"
+
+# data="$(curl -sS https://portal.smartdok.dev/environments.json)"
+data="$(cat ./portal.json)"
+branchData="$(echo $data | jq --arg branch $branch '.[] | select(.name == $branch)')"
 
 # Check if the branch has UI created exclusively, as it is not listed in "urls".
 # if it does, update frontEnd Url with branch one
@@ -24,16 +28,14 @@ baseUrl="${baseUrl}&frontend-url=${frontEndUrl}"
 
 # Append the rest of the urls to the base url
 
-# data="$(curl -sS https://portal.smartdok.dev/environments.json)"
-data="$(cat ./portal.json)"
-branchData="$(echo $data | jq --arg branch $branch '.[] | select(.name == $branch)')"
-
 # Fetch urls and iterate over them. Getting the key values
 urls="$(echo $branchData | jq '.urls')"
 for key in $(echo "$urls" | jq -r 'keys[]' | tr -d '\r'); do
-    url="$(echo "$urls" | jq -r --arg key "$key" '.[$key]')"
+    # Fetch the url by the key, and "encode" it.
+    url="$(echo "$urls" | jq -r --arg key "$key" '.[$key]' | sed 's#://#%3A%2F%2F#g')"
     paramKey="&${key}-url="
     query="${paramKey}${url}"
+    echo $query
     baseUrl="${baseUrl}${query}"
 done
 
