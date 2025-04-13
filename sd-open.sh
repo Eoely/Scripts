@@ -2,8 +2,7 @@
 # Requirements: ngrok + config, yq, jq,  sed
 
 #TODO:
-#Take in branch as cli flag
-#Extract "encode" to new function
+#General code cleanup, especially encode:
 #Document center urls are not set?
 
 CONFIG_FILE="$HOME/ngrok.yml"
@@ -16,12 +15,27 @@ fi
 
 baseUrl="https://testing.smartdok.dev/Loader?next=%2FStart.aspx&overlay-url=https%3A%2F%2Fportal.smartdok.dev%2Foverlay.js"
 frontEndUrl="https%3A%2F%2Fsmartdokui.z16.web.core.windows.net%2Fmaster%2F"
-# TODO: Read as flag argument with default to master
-# branch="feature-forms-V3"
-branch="feature-handbook-test"
+branch="master"
 
-# data="$(curl -sS https://portal.smartdok.dev/environments.json)"
-data="$(cat ./portal.json)"
+#Resolve optional branch flag (-b)
+while getopts ":b:" opt; do
+    case $opt in
+    b)
+        #TODO: Add validation to see if branch exists
+        branch=$OPTARG
+        ;;
+    \?)
+        echo "Invalid option: -$OPTARG" >&2
+        exit 1
+        ;;
+    :)
+        echo "Option -$OPTARG requires an argument." >&2
+        exit 1
+        ;;
+    esac
+done
+
+data="$(curl -sS https://portal.smartdok.dev/environments.json)"
 branchData="$(echo $data | jq --arg branch $branch '.[] | select(.name == $branch)')"
 
 # For now always use localhost URL directly for UI.
@@ -29,12 +43,10 @@ branchData="$(echo $data | jq --arg branch $branch '.[] | select(.name == $branc
 if [[ $@ =~ "ui" ]]; then
     local="localhost%3A8080"
     frontEndUrl="http%3A%2F%2F${local}"
-    echo "url = ${frontEndUrl}"
 elif [[ "$branch" != "master" ]]; then
-    echo "Branch not master, and not local"
     # Check if the branch has UI branch created, as it is not listed in "urls".
     # if it does, update frontend Url with branch one
-    hasFrontEnd="$(echo $data | jq --arg branch $branch '.[] | select(.name == $branch).branches["smartdok-ui"]')"
+    hasFrontEnd="$(echo $branchData | jq '.branches["smartdok-ui"]')"
     if [[ ! "$hasFrontEnd" == null ]]; then
         frontEndUrl="$(echo $frontEndUrl | sed "s#master#$branch#")"
     fi
@@ -64,7 +76,6 @@ for key in $(echo "$urls" | jq -r 'keys[]' | tr -d '\r'); do
         fi
 
         url="https%3A%2F%2F${subdomain}.eu.ngrok.io"
-        echo "url = ${url}"
     fi
 
     # Append url param, with lowercase key
@@ -72,6 +83,7 @@ for key in $(echo "$urls" | jq -r 'keys[]' | tr -d '\r'); do
     baseUrl="${baseUrl}&${key,,}-url=${url}"
 done
 
+#Print the baseUrl if it does not open.
 echo $baseUrl
 
 # Open the url in the browser, potentially only windows compatible
