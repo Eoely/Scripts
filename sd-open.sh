@@ -30,16 +30,20 @@ do
         exit 1
     fi
     
-    # URL encoded "https://"
-    complete="https%3A%2F%2F${subdomain}.eu.ngrok.io"
-
-    #url paramter representing the override 
+    # Complete expected url, encoded. ("https://")
+    url="https%3A%2F%2F${subdomain}.eu.ngrok.io"
+    
+    #url paramter representing the override
     paramKey="&${source}-url="
-    # Replace the parameter value with the ngrok subdomain
-    # Probably a better way to replace itself than echoing it etcs
-    baseUrl="$(echo $baseUrl | sed "s#\($paramKey\)[^&]*#\1$complete#")"
+    
+    # Replaces the url parameter value with the ngrok subdomain
+    baseUrl="$(echo $baseUrl | sed "s#\($paramKey\)[^&]*#\1$url#")"
 done
 
 echo "$baseUrl"
+
+# Open the url in the browser. I imagine that this will only work for windows
+# So would have to expand when necessary
+start $baseUrl
 
 exit 1
