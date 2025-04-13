@@ -8,23 +8,9 @@ fi
 
 baseUrl="https://testing.smartdok.dev/Loader?next=%2FStart.aspx"
 frontEndUrl="https://smartdokui.z16.web.core.windows.net/master"
-
-# TODO: read this in as flag, and default to master if not passed
+# TODO: Read as flag argument with default to master
 branch="feature-forms-V3"
 branch="feature-handbook-test"
-
-# data="$(curl -sS https://portal.smartdok.dev/environments.json)"
-data="$(cat ./portal.json)"
-branchData="$(echo $data | jq --arg branch $branch '.[] | select(.name == $branch)')"
-
-# Fetch urls and iterate over them. Getting the key values
-urls="$(echo $branchData | jq '.urls')"
-for key in $(echo "$urls" | jq -r 'keys[]' | tr -d '\r'); do
-    value="$(echo "$urls" | jq -r --arg key "$key" '.[$key]')"
-    echo "$key = $value"
-done
-
-exit 1
 
 # Check if the branch has UI created exclusively, as it is not listed in "urls".
 # if it does, update frontEnd Url with branch one
@@ -34,13 +20,26 @@ if [[ ! "$hasFrontEnd" = null ]]; then
     frontEndUrl="$(echo $frontEndUrl | sed "s#master#$branch#")"
 fi
 
-# Add frontend-url. TODO: Maybe "addParam" function?
 baseUrl="${baseUrl}&frontend-url=${frontEndUrl}"
 
-# TODO: This should not always be the case, only if the branch has UI.
-# So first need to see if it has it, if not use master.
+# Append the rest of the urls to the base url
 
-baseUrl="$(echo $baseUrl | sed "s#master#$OPTARG#g")"
+# data="$(curl -sS https://portal.smartdok.dev/environments.json)"
+data="$(cat ./portal.json)"
+branchData="$(echo $data | jq --arg branch $branch '.[] | select(.name == $branch)')"
+
+# Fetch urls and iterate over them. Getting the key values
+urls="$(echo $branchData | jq '.urls')"
+for key in $(echo "$urls" | jq -r 'keys[]' | tr -d '\r'); do
+    url="$(echo "$urls" | jq -r --arg key "$key" '.[$key]')"
+    paramKey="&${key}-url="
+    query="${paramKey}${url}"
+    baseUrl="${baseUrl}${query}"
+done
+
+echo "hello world"
+echo $baseUrl
+
 exit 1
 
 # I think essentially the whole program could be a loop that builds the URL
