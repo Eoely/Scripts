@@ -33,13 +33,17 @@ urls="$(echo $branchData | jq '.urls')"
 for key in $(echo "$urls" | jq -r 'keys[]' | tr -d '\r'); do
     # Fetch the url by the key, and "encode" it.
     url="$(echo "$urls" | jq -r --arg key "$key" '.[$key]' | sed 's#://#%3A%2F%2F#g')"
-    paramKey="&${key}-url="
-    query="${paramKey}${url}"
-    echo $query
-    baseUrl="${baseUrl}${query}"
+
+    # luna has different name in env and as query param
+    if [[ "$key" == "lunaApi" ]]; then
+        key="luna"
+    fi
+
+    # Append url param, with lowercase key
+    # "&smartapi-url=https......"
+    baseUrl="${baseUrl}&${key,,}-url=${url}"
 done
 
-echo "hello world"
 echo $baseUrl
 
 exit 1
