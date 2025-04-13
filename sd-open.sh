@@ -1,16 +1,4 @@
 #!/usr/bin/env bash
-
-# I want a shell script to "automate" the portal opening process. Both opening the branches, and imporantly supporting overrides
-#
-# `sd-start master` should open master branch with no overrides. Also support i.e. "feature-live-feed" instead of master
-# `sd-start master --override luna mobileapi web` etc etc. Same syntax as ngrok start
-# Should ideally integrate with the ngrok config directly, both for consistently naming and for getting the correct url
-#
-# Which branches to show: Could either just be a config of relevant branches, just input any name and hope it works, or fetch relevant branches from azure. Like we do in list-branches
-
-
-# Does this even make sense? It is not a config file since it does not export anything...
-# Not sure what is the best approach then,probably just reading its content to a string.
 CONFIG_FILE="$HOME/ngrok.yml"
 
 if [[ ! -f "$CONFIG_FILE" ]]; then
@@ -19,11 +7,55 @@ if [[ ! -f "$CONFIG_FILE" ]]; then
     exit 1
 fi
 
-# Copied from the portal with no overrides and master branch selected
-baseUrl="https://testing.smartdok.dev/Loader?next=%2FStart.aspx&web-url=https%3A%2F%2Fsd-master-web.azurewebsites.net&frontend-url=https%3A%2F%2Fsmartdokui.z16.web.core.windows.net%2Fmaster%2F&smartapi-url=https%3A%2F%2Fsd-master-smartapi.azurewebsites.net&mobileapi-url=https%3A%2F%2Fsd-master-mobileapi.azurewebsites.net&smartdokapi-url=https%3A%2F%2Fsd-master-api.azurewebsites.net&luna-url=https%3A%2F%2Fsd-master-lunaapi.azurewebsites.net&bff-url=https%3A%2F%2Fsmartdok-bff-master.azurewebsites.net&overlay-url=https%3A%2F%2Fportal.smartdok.dev%2Foverlay.js&export-url=https%3A%2F%2Fsmartdok-export-master.azurewebsites.net&document-service-url=https%3A%2F%2Fsmartdok-documents-master.azurewebsites.net&document-center-url=https%3A%2F%2Fsd-document-center-master.azurewebsites.net&htmlpdf-url=https%3A%2F%2Fsmartdok-htmlpdf-master.azurewebsites.net&officepdf-url=https%3A%2F%2Fsmartdok-office-pdf-master.azurewebsites.net"
+baseUrl="https://testing.smartdok.dev/Loader?next=%2FStart.aspx&overlay-url=https%3A%2F%2Fportal.smartdok.dev%2Foverlay.js"
+frontEndUrl="https%3A%2F%2Fsmartdokui.z16.web.core.windows.net%2Fmaster%2F"
+# TODO: Read as flag argument with default to master
+# branch="feature-forms-V3"
+branch="feature-handbook-test"
 
-for source in "$@"
-do
+# data="$(curl -sS https://portal.smartdok.dev/environments.json)"
+data="$(cat ./portal.json)"
+branchData="$(echo $data | jq --arg branch $branch '.[] | select(.name == $branch)')"
+
+# Check if the branch has UI created exclusively, as it is not listed in "urls".
+# if it does, update frontEnd Url with branch one
+# Could skip all of this if the branch is just "master". But does no harm if it executes. KISS for now
+hasFrontEnd="$(echo $data | jq --arg branch $branch '.[] | select(.name == $branch).branches["smartdok-ui"]')"
+if [[ ! "$hasFrontEnd" = null ]]; then
+    frontEndUrl="$(echo $frontEndUrl | sed "s#master#$branch#")"
+fi
+
+baseUrl="${baseUrl}&frontend-url=${frontEndUrl}"
+
+# Append the rest of the urls to the base url
+
+# Fetch urls and iterate over them. Getting the key values
+urls="$(echo $branchData | jq '.urls')"
+for key in $(echo "$urls" | jq -r 'keys[]' | tr -d '\r'); do
+    # Fetch the url by the key, and "encode" it.
+    url="$(echo "$urls" | jq -r --arg key "$key" '.[$key]' | sed 's#://#%3A%2F%2F#g')"
+
+    # luna has different name in env and as query param
+    if [[ "$key" == "lunaApi" ]]; then
+        key="luna"
+    fi
+
+    if [[ $@ =~ "$key" ]]; then
+        echo "Hello world"
+    fi
+
+    # Append url param, with lowercase key
+    # "&smartapi-url=https......"
+    baseUrl="${baseUrl}&${key,,}-url=${url}"
+done
+
+echo $baseUrl
+
+exit 1
+
+# Old snippet
+
+for source in "$@"; do
     subdomain="$(yq ".tunnels.${source}.subdomain" $CONFIG_FILE)"
     if [[ "$subdomain" = null ]]; then
         echo "Error: Value ${source} not found in config" >&2
