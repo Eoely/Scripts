@@ -1,0 +1,175 @@
+[
+  {
+    "name": "Staging",
+    "urls": {
+      "web": "https://web.smartdok.dev",
+      "bff": "https://bff.smartdok.dev",
+      "htmlpdf": "https://htmlpdf.smartdok.dev",
+      "officePdf": "https://officepdf.smartdok.dev",
+      "export": "https://export.smartdok.dev",
+      "mobileApi": "https://mobileapi.smartdok.dev",
+      "smartDokApi": "https://api.smartdok.dev",
+      "buildSiteApi": "https://buildsiteapi.smartdok.dev",
+      "smartApi": "https://smartapi.smartdok.dev",
+      "lunaApi": "https://luna.smartdok.dev"
+    }
+  },
+  {
+    "name": "master",
+    "branches": {
+      "smartdok": "master",
+      "smartdok-bff": "master",
+      "smartdok-export": "master",
+      "smartdok-htmlpdf": "master",
+      "smartdok-office-pdf": "master",
+      "smartdok-ui": "master",
+      "document": "master",
+      "mobile": "master",
+      "ue": "master",
+      "document-center": "master",
+      "document-center-mobile": "master",
+      "smartdok-flutter-mobile": "master",
+      "smartdok-android-card-reader": "master"
+    },
+    "urls": {
+      "web": "https://sd-master-web.azurewebsites.net",
+      "bff": "https://smartdok-bff-master.azurewebsites.net",
+      "htmlpdf": "https://smartdok-htmlpdf-master.azurewebsites.net",
+      "officePdf": "https://smartdok-office-pdf-master.azurewebsites.net",
+      "export": "https://smartdok-export-master.azurewebsites.net",
+      "mobileApi": "https://sd-master-mobileapi.azurewebsites.net",
+      "smartDokApi": "https://sd-master-api.azurewebsites.net",
+      "buildSiteApi": "https://sd-master-buildsiteapi.azurewebsites.net",
+      "smartApi": "https://sd-master-smartapi.azurewebsites.net",
+      "lunaApi": "https://sd-master-lunaapi.azurewebsites.net"
+    }
+  },
+  {
+    "name": "mobile-apps-next",
+    "branches": {
+      "smartdok-flutter-mobile": "next"
+    },
+    "urls": {
+      "web": "https://sd-master-web.azurewebsites.net",
+      "bff": "https://smartdok-bff-master.azurewebsites.net",
+      "htmlpdf": "https://smartdok-htmlpdf-master.azurewebsites.net",
+      "officePdf": "https://smartdok-office-pdf-master.azurewebsites.net",
+      "export": "https://smartdok-export-master.azurewebsites.net",
+      "mobileApi": "https://sd-master-mobileapi.azurewebsites.net",
+      "smartDokApi": "https://sd-master-api.azurewebsites.net",
+      "buildSiteApi": "https://sd-master-buildsiteapi.azurewebsites.net",
+      "smartApi": "https://sd-master-smartapi.azurewebsites.net",
+      "lunaApi": "https://sd-master-lunaapi.azurewebsites.net"
+    }
+  },
+  {
+    "name": "feature-forms-V3",
+    "branches": {
+      "smartdok": "feature-forms-V3"
+    },
+    "urls": {
+      "web": "https://sd-feature-forms-V3-web.azurewebsites.net",
+      "bff": "https://smartdok-bff-master.azurewebsites.net",
+      "htmlpdf": "https://smartdok-htmlpdf-master.azurewebsites.net",
+      "officePdf": "https://smartdok-office-pdf-master.azurewebsites.net",
+      "export": "https://smartdok-export-master.azurewebsites.net",
+      "mobileApi": "https://sd-feature-forms-V3-mobileapi.azurewebsites.net",
+      "smartDokApi": "https://sd-feature-forms-V3-api.azurewebsites.net",
+      "buildSiteApi": "https://sd-feature-forms-V3-buildsiteapi.azurewebsites.net",
+      "smartApi": "https://sd-feature-forms-V3-smartapi.azurewebsites.net",
+      "lunaApi": "https://sd-feature-forms-V3-lunaapi.azurewebsites.net"
+    }
+  },
+  {
+    "name": "feature-forms-19092-flutter",
+    "branches": {
+      "smartdok-bff": "feature-forms-19092-flutter",
+      "smartdok-flutter-mobile": "feature-forms-19092-flutter"
+    },
+    "urls": {
+      "web": "https://sd-master-web.azurewebsites.net",
+      "bff": "https://smartdok-bff-feature-forms-19092-flutter.azurewebsites.net",
+      "htmlpdf": "https://smartdok-htmlpdf-master.azurewebsites.net",
+      "officePdf": "https://smartdok-office-pdf-master.azurewebsites.net",
+      "export": "https://smartdok-export-master.azurewebsites.net",
+      "mobileApi": "https://sd-master-mobileapi.azurewebsites.net",
+      "smartDokApi": "https://sd-master-api.azurewebsites.net",
+      "buildSiteApi": "https://sd-master-buildsiteapi.azurewebsites.net",
+      "smartApi": "https://sd-master-smartapi.azurewebsites.net",
+      "lunaApi": "https://sd-master-lunaapi.azurewebsites.net"
+    }
+  },
+  {
+    "name": "feature-push-ios-background",
+    "branches": {
+      "smartdok-flutter-mobile": "feature-push-ios-background"
+    },
+    "urls": {
+      "web": "https://sd-master-web.azurewebsites.net",
+      "bff": "https://smartdok-bff-master.azurewebsites.net",
+      "htmlpdf": "https://smartdok-htmlpdf-master.azurewebsites.net",
+      "officePdf": "https://smartdok-office-pdf-master.azurewebsites.net",
+      "export": "https://smartdok-export-master.azurewebsites.net",
+      "mobileApi": "https://sd-master-mobileapi.azurewebsites.net",
+      "smartDokApi": "https://sd-master-api.azurewebsites.net",
+      "buildSiteApi": "https://sd-master-buildsiteapi.azurewebsites.net",
+      "smartApi": "https://sd-master-smartapi.azurewebsites.net",
+      "lunaApi": "https://sd-master-lunaapi.azurewebsites.net"
+    }
+  },
+  {
+    "name": "feature-handbook-test",
+    "branches": {
+      "smartdok": "feature-handbook-test",
+      "document": "feature-handbook-test"
+    },
+    "urls": {
+      "web": "https://sd-feature-handbook-test-web.azurewebsites.net",
+      "bff": "https://smartdok-bff-master.azurewebsites.net",
+      "htmlpdf": "https://smartdok-htmlpdf-master.azurewebsites.net",
+      "officePdf": "https://smartdok-office-pdf-master.azurewebsites.net",
+      "export": "https://smartdok-export-master.azurewebsites.net",
+      "mobileApi": "https://sd-feature-handbook-test-mobileapi.azurewebsites.net",
+      "smartDokApi": "https://sd-feature-handbook-test-api.azurewebsites.net",
+      "buildSiteApi": "https://sd-feature-handbook-test-buildsiteapi.azurewebsites.net",
+      "smartApi": "https://sd-feature-handbook-test-smartapi.azurewebsites.net",
+      "lunaApi": "https://sd-feature-handbook-test-lunaapi.azurewebsites.net"
+    }
+  },
+  {
+    "name": "feature-pricing-v2-migration-machine",
+    "branches": {
+      "smartdok": "feature-pricing-v2-migration-machine"
+    },
+    "urls": {
+      "web": "https://sd-feature-pricing-v2-migration-machine-web.azurewebsites.net",
+      "bff": "https://smartdok-bff-master.azurewebsites.net",
+      "htmlpdf": "https://smartdok-htmlpdf-master.azurewebsites.net",
+      "officePdf": "https://smartdok-office-pdf-master.azurewebsites.net",
+      "export": "https://smartdok-export-master.azurewebsites.net",
+      "mobileApi": "https://sd-feature-pricing-v2-migration-machine-mobileapi.azurewebsites.net",
+      "smartDokApi": "https://sd-feature-pricing-v2-migration-machine-api.azurewebsites.net",
+      "buildSiteApi": "https://sd-feature-pricing-v2-migration-machine-buildsiteapi.azurewebsites.net",
+      "smartApi": "https://sd-feature-pricing-v2-migration-machine-smartapi.azurewebsites.net",
+      "lunaApi": "https://sd-feature-pricing-v2-migration-machine-lunaapi.azurewebsites.net"
+    }
+  },
+  {
+    "name": "feature-bug-20204-push",
+    "branches": {
+      "smartdok": "feature-bug-20204-push"
+    },
+    "urls": {
+      "web": "https://sd-feature-bug-20204-push-web.azurewebsites.net",
+      "bff": "https://smartdok-bff-master.azurewebsites.net",
+      "htmlpdf": "https://smartdok-htmlpdf-master.azurewebsites.net",
+      "officePdf": "https://smartdok-office-pdf-master.azurewebsites.net",
+      "export": "https://smartdok-export-master.azurewebsites.net",
+      "mobileApi": "https://sd-feature-bug-20204-push-mobileapi.azurewebsites.net",
+      "smartDokApi": "https://sd-feature-bug-20204-push-api.azurewebsites.net",
+      "buildSiteApi": "https://sd-feature-bug-20204-push-buildsiteapi.azurewebsites.net",
+      "smartApi": "https://sd-feature-bug-20204-push-smartapi.azurewebsites.net",
+      "lunaApi": "https://sd-feature-bug-20204-push-lunaapi.azurewebsites.net"
+    }
+  }
+]
