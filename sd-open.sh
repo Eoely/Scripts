@@ -20,7 +20,7 @@ if [[ ! -f "$CONFIG_FILE" ]]; then
 fi
 
 # Copied from the portal with no overrides and master branch selected
-baseUrl="https://testing.smartdok.dev/Loader?next=%2FStart.aspx&web-url=https%3A%2F%2Fsd-master-web.azurewebsites.net&frontend-url=https%3A%2F%2Fsmartdokui.z16.web.core.windows.net%2Fmaster%2F&smartapi-url=https%3A%2F%2Fsd-master-smartapi.azurewebsites.net&mobileapi-url=https%3A%2F%2Fsd-master-mobileapi.azurewebsites.net&smartdokapi-url=https%3A%2F%2Fsd-master-api.azurewebsites.net&luna-url=https%3A%2F%2Fsd-master-lunaapi.azurewebsites.net&bff-url=https%3A%2F%2Fsd-eivind-bff.eu.ngrok.io&overlay-url=https%3A%2F%2Fportal.smartdok.dev%2Foverlay.js&export-url=https%3A%2F%2Fsmartdok-export-master.azurewebsites.net&document-service-url=https%3A%2F%2Fsmartdok-documents-master.azurewebsites.net&document-center-url=https%3A%2F%2Fsd-document-center-master.azurewebsites.net&htmlpdf-url=https%3A%2F%2Fsmartdok-htmlpdf-master.azurewebsites.net&officepdf-url=https%3A%2F%2Fsmartdok-office-pdf-master.azurewebsites.net"
+baseUrl="https://testing.smartdok.dev/Loader?next=%2FStart.aspx&web-url=https%3A%2F%2Fsd-master-web.azurewebsites.net&frontend-url=https%3A%2F%2Fsmartdokui.z16.web.core.windows.net%2Fmaster%2F&smartapi-url=https%3A%2F%2Fsd-master-smartapi.azurewebsites.net&mobileapi-url=https%3A%2F%2Fsd-master-mobileapi.azurewebsites.net&smartdokapi-url=https%3A%2F%2Fsd-master-api.azurewebsites.net&luna-url=https%3A%2F%2Fsd-master-lunaapi.azurewebsites.net&bff-url=https%3A%2F%2Fsmartdok-bff-master.azurewebsites.net&overlay-url=https%3A%2F%2Fportal.smartdok.dev%2Foverlay.js&export-url=https%3A%2F%2Fsmartdok-export-master.azurewebsites.net&document-service-url=https%3A%2F%2Fsmartdok-documents-master.azurewebsites.net&document-center-url=https%3A%2F%2Fsd-document-center-master.azurewebsites.net&htmlpdf-url=https%3A%2F%2Fsmartdok-htmlpdf-master.azurewebsites.net&officepdf-url=https%3A%2F%2Fsmartdok-office-pdf-master.azurewebsites.net"
 
 for source in "$@"
 do
@@ -29,13 +29,13 @@ do
         echo "Error: Value ${source} not found in config" >&2
         exit 1
     fi
-    
+
     # Complete expected url, encoded. ("https://")
     url="https%3A%2F%2F${subdomain}.eu.ngrok.io"
-    
+
     #url paramter representing the override
     paramKey="&${source}-url="
-    
+
     # Replaces the url parameter value with the ngrok subdomain
     baseUrl="$(echo $baseUrl | sed "s#\($paramKey\)[^&]*#\1$url#")"
 done
