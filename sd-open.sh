@@ -17,11 +17,21 @@ baseUrl="https://testing.smartdok.dev/Loader?next=%2FStart.aspx&overlay-url=http
 frontEndUrl="https%3A%2F%2Fsmartdokui.z16.web.core.windows.net%2Fmaster%2F"
 branch="master"
 
+data="$(curl -sS https://portal.smartdok.dev/environments.json)"
+branchData="$(echo $data | jq --arg branch $branch '.[] | select(.name == $branch)')"
+
 #Resolve optional branch flag (-b)
 while getopts ":b:" opt; do
     case $opt in
     b)
-        #TODO: Add validation to see if branch exists
+        # Return error message if branch does not exist
+        # This could be iterated to a branch selection in fzf if wanted.
+        portalBranches="$(echo $data | jq -r '.[] | .name')"
+        if [[ ! $portalBranches =~ $OPTARG ]]; then
+            echo "Error: Branch $OPTARG does not exist" >&2
+            echo "Valid branches: $portalBranches" >&2
+            exit 1
+        fi
         branch=$OPTARG
         ;;
     \?)
@@ -35,16 +45,13 @@ while getopts ":b:" opt; do
     esac
 done
 
-data="$(curl -sS https://portal.smartdok.dev/environments.json)"
-branchData="$(echo $data | jq --arg branch $branch '.[] | select(.name == $branch)')"
-
-# For now always use localhost URL directly for UI.
-# If needed could add support for ngrok url, via key smartdokui.
+# Add UI override if passed, always use localhost.
+# If needed could add support for ngrok url, via different key (smartdokui).
 if [[ $@ =~ "ui" ]]; then
     local="localhost%3A8080"
     frontEndUrl="http%3A%2F%2F${local}"
 elif [[ "$branch" != "master" ]]; then
-    # Check if the branch has UI branch created, as it is not listed in "urls".
+    # Check if the branch has UI created, as it is not listed in "urls".
     # if it does, update frontend Url with branch one
     hasFrontEnd="$(echo $branchData | jq '.branches["smartdok-ui"]')"
     if [[ ! "$hasFrontEnd" == null ]]; then
@@ -78,13 +85,13 @@ for key in $(echo "$urls" | jq -r 'keys[]' | tr -d '\r'); do
         url="https%3A%2F%2F${subdomain}.eu.ngrok.io"
     fi
 
-    # Append url param, with lowercase key
+    # Append url query parameter, with lowercase key
     # "&smartapi-url=https......"
     baseUrl="${baseUrl}&${key,,}-url=${url}"
 done
 
-#Print the baseUrl if it does not open.
-echo $baseUrl
+#Print the baseUrl. Useful for debug.
+# echo $baseUrl
 
 # Open the url in the browser, potentially only windows compatible
 start $baseUrl
