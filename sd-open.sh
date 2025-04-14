@@ -14,20 +14,19 @@ if [[ ! -f "$CONFIG_FILE" ]]; then
 fi
 
 baseUrl="https://testing.smartdok.dev/Loader?next=%2FStart.aspx&overlay-url=https%3A%2F%2Fportal.smartdok.dev%2Foverlay.js"
-frontEndUrl="https%3A%2F%2Fsmartdokui.z16.web.core.windows.net%2Fmaster%2F"
 branch="master" # Default, changed programatically
+frontEndUrl="https%3A%2F%2Fsmartdokui.z16.web.core.windows.net%2F$branch%2F"
 
 data="$(curl -sS https://portal.smartdok.dev/environments.json)"
 portalBranches="$(echo $data | jq -r '.[] | .name' | tr -d '\r')"
 
 #Resolve flags:
-# -b (branch): Pass in named branch which you will open
+# -b (branch): Pass in named branch which you will open. E.g "sd-open -b feature-live-feed"
 # -s (search): Select among branches available
 while getopts ":b:s" opt; do
     case $opt in
     b)
         # Return error message if branch does not exist
-        # This could be iterated to a branch selection in fzf if wanted.
         if [[ ! $portalBranches =~ $OPTARG ]]; then
             echo "Error: Branch $OPTARG does not exist" >&2
             echo "Valid branches: $portalBranches" >&2
@@ -58,18 +57,20 @@ if [[ $@ =~ "ui" ]]; then
     frontEndUrl="http%3A%2F%2F${local}"
 elif [[ "$branch" != "master" ]]; then
     # Check if the branch has UI created, as it is not listed in "urls".
-    # if it does, update frontend Url with branch one
+    # If it does, update frontend Url with branch one.
     hasFrontEnd="$(echo $branchData | jq '.branches["smartdok-ui"]')"
     if [[ "$hasFrontEnd" != null ]]; then
         frontEndUrl="$(echo $frontEndUrl | sed "s#master#$branch#")"
     fi
 fi
 
+# Append frontEnd URL
 baseUrl="${baseUrl}&frontend-url=${frontEndUrl}"
 
-# Append the rest of the urls to the base url
-
-# Fetch urls and iterate over them. Getting the key values
+# Build testing URL by iterating over URLs in env file.
+# If branch has specific implementation, it will use that.
+# If not it will use master
+# Use NGROK url if respective key is passed in
 urls="$(echo $branchData | jq '.urls')"
 for key in $(echo "$urls" | jq -r 'keys[]' | tr -d '\r'); do
     # Fetch the url by the key, and "encode" it.
