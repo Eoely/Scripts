@@ -14,8 +14,9 @@ if [[ ! -f "$CONFIG_FILE" ]]; then
 fi
 
 baseUrl="https://testing.smartdok.dev/Loader?next=%2FStart.aspx&overlay-url=https%3A%2F%2Fportal.smartdok.dev%2Foverlay.js"
+baseUrl="https://testing.smartdok.dev/Loader?next=%2FStart.aspx&overlay-url=https%3A%2F%2Fportal.smartdok.dev%2Foverlay.js"
 branch="master" # Default, changed programatically
-frontEndUrl="https%3A%2F%2Fsmartdokui.z16.web.core.windows.net%2F$branch%2F"
+frontEndUrl="https://smartdokui.z16.web.core.windows.net/$branch/"
 
 data="$(curl -sS https://portal.smartdok.dev/environments.json)"
 portalBranches="$(echo $data | jq -r '.[] | .name' | tr -d '\r')"
@@ -53,8 +54,7 @@ branchData="$(echo $data | jq --arg branch $branch '.[] | select(.name == $branc
 # Add UI override if passed, always use localhost.
 # If needed could add support for ngrok url, via different key (smartdokui).
 if [[ $@ =~ "ui" ]]; then
-    local="localhost%3A8080"
-    frontEndUrl="http%3A%2F%2F${local}"
+    frontEndUrl="http://localhost:8080"
 elif [[ "$branch" != "master" ]]; then
     # Check if the branch has UI created, as it is not listed in "urls".
     # If it does, update frontend Url with branch one.
@@ -74,7 +74,7 @@ baseUrl="${baseUrl}&frontend-url=${frontEndUrl}"
 urls="$(echo $branchData | jq '.urls')"
 for key in $(echo "$urls" | jq -r 'keys[]' | tr -d '\r'); do
     # Fetch the url by the key, and "encode" it.
-    url="$(echo "$urls" | jq -r --arg key "$key" '.[$key]' | sed 's#://#%3A%2F%2F#g')"
+    url="$(echo "$urls" | jq -r --arg key "$key" '.[$key]')"
 
     # luna has different name in env and as query param
     if [[ "$key" == "lunaApi" ]]; then
@@ -89,7 +89,7 @@ for key in $(echo "$urls" | jq -r 'keys[]' | tr -d '\r'); do
             exit 1
         fi
 
-        url="https%3A%2F%2F${subdomain}.eu.ngrok.io"
+        url="https://${subdomain}.eu.ngrok.io"
     fi
 
     # Append url query parameter, with lowercase key
