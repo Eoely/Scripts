@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Requirements: ngrok + config, yq, jq,  sed
+# Requirements: ngrok + config, yq, jq, sed, fzf
 
 #TODO:
 #General code cleanup, especially encoding logic
