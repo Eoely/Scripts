@@ -97,6 +97,17 @@ for key in $(echo "$urls" | jq -r 'keys[]' | tr -d '\r'); do
     baseUrl="${baseUrl}&${key,,}-url=${url}"
 done
 
-# Open the url in the browser, potentially only windows compatible
-start $baseUrl
-exit 1
+open_url() {
+    url="$1"
+
+    if   command -v xdg-open   >/dev/null 2>&1; then xdg-open   "$url" >/dev/null 2>&1 &
+    elif command -v wslview    >/dev/null 2>&1; then wslview    "$url" >/dev/null 2>&1 &
+    elif command -v open       >/dev/null 2>&1; then open       "$url" >/dev/null 2>&1 &   # macOS / BSD
+    elif command -v cmd.exe    >/dev/null 2>&1; then start      "$url" >/dev/null 2>&1 &
+    else
+        printf 'Could not find a browser launcher. Please open this URL manually:\n%s\n' "$url" >&2
+        return 1
+    fi
+}
+
+open_url "$baseUrl" || exit 1
