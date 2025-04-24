@@ -16,7 +16,7 @@ valid_types=("epic", "feature", "user story", "task", "bug", "chore", "discover"
 #Make cli argument lowercase to match with valid types
 itemType="${1,,}"
 
-if ! [[ ${valid_types[*]} =~ "$itemType" ]]; then
+if [[ -z $1 || ! ${valid_types[*]} =~ "$itemType" ]]; then
     echo "Not a valid work item"
     exit 1
 fi
