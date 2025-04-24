@@ -65,7 +65,6 @@ picked_json=$(
     + "\t" + (tojson)
   ' |
   fzf --ansi                       \
-      --height=90% --border        \
       --delimiter=$'\t' --with-nth=1 |
   cut -f2
 )
