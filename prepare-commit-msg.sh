@@ -2,34 +2,28 @@
 # ---------------------------------------------------------------------------
 #  prepare-commit-msg hook
 #  – Prepends "[#ID] " to the message, where ID comes from:
-#      1. the branch name (quick path), or if absent
-#      2. an Azure DevOps fzf picker (slow path)
+#      1. the branch name 
+#      2. an Azure DevOps fzf picker (if "invalid" branch name)
 # ---------------------------------------------------------------------------
 set -euo pipefail
 
-########################################################################
-# 1. FAST PATH  – read ID straight from branch name
-########################################################################
+# Try reading ticket number from branch name, and capture it
+# "-" + 3-5 digits anywhere in the branch name
 COMMIT_MSG_FILE=$1
 BRANCH=$(git symbolic-ref --quiet --short HEAD || true)
 
-regex='[^0-9]([0-9]{3,5})[^0-9]?'   # 123, 1234, 12345 (3-5 digits)
-
+regex=".*-([0-9]{3,5}).*"
 if [[ $BRANCH =~ $regex ]]; then
   ID="${BASH_REMATCH[1]}"
-  # If the prefix isn't already there, add it
-  grep -q "^\[#${ID}\]" "$COMMIT_MSG_FILE" || \
-    sed -i "1s/^/[#${ID}] /" "$COMMIT_MSG_FILE"
+  sed -i "1s/^/[#${ID}] /" "$COMMIT_MSG_FILE"
   exit 0
 fi
 
-########################################################################
-# 2. SLOW PATH  – open fzf picker (only if branch had no ID)
-########################################################################
+# Fetch tickets from azure devops, selectable with fzf
 CONFIG_FILE="$HOME/.azure-devops-env"
 QUERY_ID="645a21fa-2c39-4f1b-ab93-b87078e545c2"
 
-# ── dependencies ──────────────────────────────────────────────────────
+# Validate dependencies
 for cmd in az jq fzf; do
   command -v "$cmd" >/dev/null 2>&1 || {
     echo "prepare-commit-msg: '$cmd' not found in \$PATH." >&2; exit 1; }
@@ -55,7 +49,7 @@ formatted="$(echo "$output" | jq '.[].fields
 
 [[ -z $formatted ]] && { echo "No work items." >&2; exit 0; }
 
-# ── colourful fzf menu – UNCHANGED colouring logic ────────────────────
+# Colorful fzf menu ────────────────────
 picked_json=$(
   printf '%s\n' "$formatted" |
   jq -r -c '
@@ -81,8 +75,5 @@ picked_json=$(
 
 ID=$(jq -r '.id' <<<"$picked_json")
 
-########################################################################
-# 3. Prepend the chosen ID to the commit message
-########################################################################
 sed -i "1s/^/[#${ID}] /" "$COMMIT_MSG_FILE"
 
