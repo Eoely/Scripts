@@ -1,56 +1,72 @@
 #!/usr/bin/env bash
+###############################################################################
+#  Azure DevOps work-item picker
+#  –
+#  – Reads $DEVOPS_BASE_URL from  ~/.azure-devops-env        (unchanged)
+#  – Runs your saved WIQL query                              (unchanged)
+#  – Transforms the result with the very same jq you wrote   (unchanged)
+#  – Colours Type + Title in fzf and prints the raw JSON
+#
+#  Requires: az (with devops ext), jq ≥1.6, fzf ≥0.35
+###############################################################################
+set -euo pipefail
 
 CONFIG_FILE="$HOME/.azure-devops-env"
+QUERY_ID="645a21fa-2c39-4f1b-ab93-b87078e545c2"
 
-if [[ ! -f "$CONFIG_FILE" ]]; then
-    echo "Error: Required configuration file not found at '$CONFIG_FILE'" >&2
-    echo "Please create it or check the path." >&2
-    exit 1
-fi
+# ─── sanity checks ───────────────────────────────────────────────────────────
+for cmd in az jq fzf; do
+  command -v "$cmd" >/dev/null 2>&1 \
+    || { echo "Error: '$cmd' not found in \$PATH" >&2; exit 1; }
+done
 
-# Safe to source now
-source "$CONFIG_FILE"
- az boards query --organization https://dev.azure.com/VismaSmartDok  --id 645a21fa-2c39-4f1b-ab93-b87078e545c2
-queryId="645a21fa-2c39-4f1b-ab93-b87078e545c2"
+[[ -f $CONFIG_FILE ]] \
+  || { echo "Error: config file '$CONFIG_FILE' not found." >&2; exit 1; }
 
+# shellcheck source=/dev/null
+source "$CONFIG_FILE"          # must export DEVOPS_BASE_URL
+: "${DEVOPS_BASE_URL:?DEVOPS_BASE_URL not set in $CONFIG_FILE}"
 
-
+# ─── run WIQL query (UNCHANGED) ──────────────────────────────────────────────
 output=$(az boards query \
-    --organization "$DEVOPS_BASE_URL" \
-    --id "$queryId")
+           --organization "$DEVOPS_BASE_URL" \
+           --id           "$QUERY_ID")
 
-formatted="$(echo $output | jq '.[].fields | {title: ."System.Title", id: ."System.Id", type: ."System.WorkItemType", state: ."System.State"}')"
+# ─── field subset with YOUR jq filter (UNCHANGED) ────────────────────────────
+formatted="$(echo "$output" | jq '.[].fields
+      | {title: ."System.Title",
+         id:    ."System.Id",
+         type:  ."System.WorkItemType",
+         state: ."System.State"}')"
+
+[[ -z $formatted ]] && { echo "No work items returned." >&2; exit 0; }
+
+# ─── colourful fzf menu (identical colouring logic) ──────────────────────────
+# Potential additional fzf options:
+#--height=90% --border \
+#--preview='echo {2} | jq -C' \
+#--preview-window=down,20%,border-bottom |
 
 picked=$(
-  # 1) stream the JSON lines held in $formatted
   printf '%s\n' "$formatted" |
-
-  # 2) build two TAB-separated fields:
-  #    • field-1 = coloured "[Type] ─ Title"  (what the user sees)
-  #    • field-2 = untouched JSON            (stays hidden, survives selection)
   jq -r -c '
-    def a(n):  "\u001b[" + (n|tostring) + "m";  # make an ANSI colour
+    def a(n):  "\u001b[" + (n|tostring) + "m";
     def reset: a(0);
-    def tcol(t):                                # type → colour map
-         if t=="User Story" then 32             # green
-    elif t=="Task"       then 36                # cyan
-    elif t=="Feature"    then 33                # yellow
-    elif t=="Chore"      then 35                # magenta
-    else 37 end;                                # fallback = white
-    (a(tcol(.type)) + .type + reset)
-    + " ─ " + .title
+    def tcol(t):
+         if t=="User Story" then 32      # green
+    elif t=="Task"       then 36         # cyan
+    elif t=="Feature"    then 33         # yellow
+    elif t=="Chore"      then 35         # magenta
+    else 37 end;                         # fallback white
+    (a(tcol(.type)) + .type + reset) + " ─ " + .title
     + "\t" + (tojson)
   ' |
-
-  # 3) fire up fzf with colours and a JSON preview
   fzf --ansi \
-      --delimiter=$'\t' --with-nth=1 \
-      --preview='echo {2..} | jq -C' \
-      --preview-window=down,60%,border-bottom |
-
-  # 4) strip the pretty column, keep only the raw JSON
+      --delimiter=$'\t' --with-nth=1 |
   cut -f2
 )
 
-# --- do whatever you like with the chosen JSON -----------------------------
-printf 'Picked item:\n%s\n' "$picked"
+[[ -z $picked ]] && { echo "No item selected." >&2; exit 1; }
+
+printf '%s\n' "$picked"
+
