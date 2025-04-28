@@ -9,7 +9,7 @@
 #
 #
 # TODO:Find a better way to do the end of cursor, curently in .giconfig-work. Should be confined to this script
-# TODO:If ticket is not selected or read, the user should still be able to input commit meessage
+# TODO:If ticket is not selected or read, the user should still be able to input commit message
 
 set -euo pipefail
 
