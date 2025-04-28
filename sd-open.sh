@@ -4,6 +4,7 @@
 #TODO:
 #General code cleanup, especially encoding logic
 #Document center urls are not set?
+#Would be a bit cool if it could close all other instances of testing.smartdok.dev
 
 CONFIG_FILE="$HOME/ngrok.yml"
 
