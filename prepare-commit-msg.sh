@@ -46,11 +46,17 @@ output=$(az boards query \
            --id           "$QUERY_ID")
 
 formatted=$(echo "$output" | jq '.[].fields
-  | {title: ."System.Title",
+  | {
      id:    ."System.Id",
-     type:  ."System.WorkItemType"}')
+     type:  ."System.WorkItemType",
+     state: ."System.State",
+     assigned: ."System.AssignedTo"."displayName",
+     title: ."System.Title"
+   }')
 
 [[ -z $formatted ]] && { echo "No work items." >&2; exit 0; }
+
+SHOW_PREVIEW=true
 
 # ---------- fzf picker -------------------------------------------------------
 picked_json=$(printf '%s\n' "$formatted" |
@@ -70,8 +76,14 @@ jq -r -c '
   # emit: "<icon><title><TAB><full-json>"
   (icon(.type) + .title) + "\t" + (tojson)
 ' |
-fzf --delimiter=$'\t' --with-nth=1 |
-cut -f2
+  if [ "$SHOW_PREVIEW" = true ]; then
+    fzf --delimiter=$'\t' --with-nth=1 \
+        --preview 'echo {2} | jq' \
+        --preview-window=right:30%
+  else
+    fzf --delimiter=$'\t' --with-nth=1
+  fi
+  ficut -f2
 )
 
 
