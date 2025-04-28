@@ -9,9 +9,6 @@
 #
 #
 # TODO:Find a better way to do the end of cursor, curently in .giconfig-work. Should be confined to this script
-# TODO:If ticket is not selected or read, the user should still be able to input commit message
-
-set -euo pipefail
 
 COMMIT_MSG_FILE=$1
 COMMIT_SOURCE=${2:-}
@@ -77,7 +74,11 @@ fzf --delimiter=$'\t' --with-nth=1 |
 cut -f2
 )
 
-[[ -z $picked_json ]] && { echo "Commit aborted." >&2; exit 1; }
+
+# The user didn't pick a ticket, commit without any tag
+if [[ -z $picked_json ]]; then
+  exit 0
+fi
 
 ID=$(jq -r '.id' <<<"$picked_json")
 sed -i "1s/^/[#${ID}] /" "$COMMIT_MSG_FILE"
