@@ -8,14 +8,18 @@
 # ---------------------------------------------------------------------------
 #
 #
-# TODO:Don't trigger this if merge commit, rebase etc
 # TODO:Find a better way to do the end of cursor, curently in .giconfig-work. Should be confined to this script
 # TODO:If ticket is not selected or read, the user should still be able to input commit meessage
 
 set -euo pipefail
 
 COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=${2:-}
 BRANCH=$(git symbolic-ref --quiet --short HEAD || true)
+
+if [ -n "$COMMIT_SOURCE" ]; then
+  exit 0
+fi
 
 regex='.*-([0-9]{3,5}).*'
 if [[ $BRANCH =~ $regex ]]; then
